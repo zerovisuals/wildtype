@@ -105,8 +105,8 @@ body[data-font='serif'] .fx {
 }
 .editor {
   position: relative;
-  width: min(1100px, 100%);
-  min-height: 46svh;
+  width: min(1400px, 100%);
+  min-height: 58svh;
   display: flex; align-items: center; justify-content: center;
   cursor: text;
   outline: none;
@@ -115,11 +115,11 @@ body[data-font='serif'] .fx {
   position: relative;
   width: 100%;
   text-align: center;
-  font-size: clamp(38px, 5.6vw, 76px);
+  font-size: clamp(40px, 12vw, 180px); /* big like a poster, but 'Type something…' always fits one line */
   line-height: 1.12;
   overflow-wrap: anywhere;
 }
-.text { line-height: 1.5; }
+.text { line-height: 1.25; }
 .ph { color: var(--ph); pointer-events: none; }
 .caret {
   display: inline-block;
@@ -289,3 +289,18 @@ button:focus-visible, a:focus-visible { outline: 2px solid #2f6bff; outline-offs
   border: 0; cursor: pointer; border-radius: 999px; padding: 8px 14px;
   background: var(--bg); color: var(--ink); font: 600 13px/1 var(--sans);
 }
+
+/* scene: what grows on the type. Back layer sits under the letters, front layer over them. */
+.scene {
+  position: fixed; inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  filter: url(#boil); /* hand-drawn line boil */
+}
+.scene.back { z-index: 0; }
+.scene.front { z-index: 3; }
+.editor { z-index: 1; }
+.dock { position: relative; z-index: 4; }
+
+/* between demo words the field is briefly empty: no giant placeholder flashing up */
+.demo .ph { opacity: 0; }

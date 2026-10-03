@@ -11,18 +11,26 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..500,0..100,0..1&family=Noto+Color+Emoji&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/src/style.css" />
 </head>
-<body data-font="sans">
+<body data-font="serif">
+  <!-- line boil: Turbulent Displace for the scene, its seed stepped at 12 fps (Posterize Time) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <filter id="boil" x="-2%" y="-2%" width="104%" height="104%" color-interpolation-filters="sRGB">
+      <feTurbulence id="boilNoise" type="turbulence" baseFrequency="0.025" numOctaves="3" seed="1" result="n" />
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="8" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+  </svg>
   <canvas class="bg" id="bg" aria-hidden="true"></canvas>
   <header class="nav">
     <a class="logo" href="/" aria-label="emojiii home">emojiii</a>
     <div class="nav-actions">
-      <button class="text-btn" id="codeBtn">Get the code</button>
       <button class="text-btn" id="shareBtn">Share</button>
       <button class="text-btn strong" id="exportBtn">Export</button>
     </div>
   </header>
 
   <main class="play" id="play" aria-label="Playground">
+    <canvas class="scene back" id="sceneBack" aria-hidden="true"></canvas>
+    <canvas class="scene front" id="sceneFront" aria-hidden="true"></canvas>
     <div class="editor" id="editor" tabindex="-1">
       <textarea id="input" class="sr-input" aria-label="Type your text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
       <div class="text" id="text"></div>
@@ -31,6 +39,12 @@
 
     <div class="dock" role="toolbar" aria-label="Controls">
       <div class="dock-row">
+        <div class="seg" id="fxSeg" role="radiogroup" aria-label="Effect">
+          <button role="radio" data-v="meadow" class="seg-btn">Meadow</button>
+          <button role="radio" data-v="critters" class="seg-btn">Critters</button>
+          <button role="radio" data-v="balloons" class="seg-btn">Balloons</button>
+          <button role="radio" data-v="doodles" class="seg-btn">Doodles</button>
+        </div>
         <div class="seg" id="fontSeg" role="radiogroup" aria-label="Font">
           <button role="radio" data-v="sans" class="seg-btn f-sans">Grotesk</button>
           <button role="radio" data-v="serif" class="seg-btn f-serif">Serif</button>
@@ -39,13 +53,12 @@
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4.5 4.5v3.6h3.6"/></svg>
         </button>
       </div>
-      <p class="hint">Click a word to reroll its emojis</p>
+      <p class="hint"></p>
     </div>
   </main>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <dialog class="sheet" id="exportSheet" aria-label="Export"></dialog>
-  <dialog class="sheet" id="codeSheet" aria-label="Get the code"></dialog>
 
   <script type="module" src="/src/main.ts"></script>
 </body>

@@ -1,6 +1,19 @@
 import gsap from 'gsap';
 import { preload } from './letters';
 import { startEditor } from './editor';
+import { Scene } from './scene/engine';
+import { Meadow } from './scene/meadow';
+import { Critters } from './scene/critters';
+import { Balloons } from './scene/balloons';
+import { Doodles } from './scene/doodles';
+import type { Effect } from './scene/engine';
+
+const EFFECTS: Record<string, () => Effect> = {
+  meadow: () => new Meadow(),
+  critters: () => new Critters(),
+  balloons: () => new Balloons(),
+  doodles: () => new Doodles(),
+};
 import { BACKDROPS, record, download, videoMime } from './export';
 import { mountBackground } from './bg/engine';
 
@@ -10,7 +23,25 @@ const bg = mountBackground(document.querySelector('#bg') as HTMLCanvasElement);
 const $ = <T extends HTMLElement>(s: string) => document.querySelector(s) as T;
 const input = $<HTMLTextAreaElement>('#input');
 
-const editor = startEditor({ editor: $('#editor'), input, text: $('#text'), fx: $('#fx') });
+// the scene: what grows on the letters, drawn behind and in front of the type
+const scene = new Scene($<HTMLCanvasElement>('#sceneBack'), $<HTMLCanvasElement>('#sceneFront'), $('#text'), new Meadow());
+
+const editor = startEditor({
+  editor: $('#editor'),
+  input,
+  text: $('#text'),
+  fx: $('#fx'),
+  hooks: {
+    insert: (el, c, speed) => scene.add(el, c, speed),
+    remove: (el, rect) => scene.remove(el, rect),
+  },
+});
+
+// a click anywhere in the playground (not on a control) belongs to the scene
+$('#play').addEventListener('pointerdown', (e) => {
+  if ((e.target as HTMLElement).closest('button, .dock, dialog')) return;
+  scene.click(e.clientX, e.clientY);
+});
 
 // ---------- toast ----------
 const toastEl = $('#toast');
@@ -44,28 +75,55 @@ function segmented(el: HTMLElement, initial: string, onPick: (v: string) => void
 
 // ---------- share link: text and font live in the URL hash ----------
 const shared = new URLSearchParams(location.hash.slice(1));
-controls.font = segmented($('#fontSeg'), shared.get('f') === 'serif' ? 'serif' : 'sans', (v) => (document.body.dataset.font = v));
+controls.font = segmented($('#fontSeg'), shared.get('f') === 'sans' ? 'sans' : 'serif', (v) => {
+  document.body.dataset.font = v;
+  requestAnimationFrame(() => scene.refont());
+});
+const startFx = EFFECTS[shared.get('e') ?? ''] ? shared.get('e')! : 'meadow';
+let fxName = startFx;
+let showcasePick = false; // true while the demo itself is switching effects
+let pinned: string | null = null; // an effect the person chose: the showcase stays on it
+controls.fx = segmented($('#fxSeg'), startFx, (v) => {
+  if (scene.name !== v) scene.setEffect(EFFECTS[v]()); // also covers a shared link that opens on another effect
+  if (!showcasePick && fxName !== v) pinned = v;
+  fxName = v;
+  $('.hint').textContent = scene.hint;
+});
+$('.hint').textContent = scene.hint;
 
-// ---------- idle demo: types a line, lets it sit, deletes it, types the next ----------
-const LINES = [
-  'Try pizza, rain or a cat',
-  'Coffee first, then the world',
-  'Saturday: beach and ice cream',
-  'My plant is thriving',
-  'Pack the bags, we fly at dawn',
-  'Happy birthday, you legend',
-  'Late night ramen and jazz',
+// ---------- idle showcase: each effect introduces itself with a phrase that suits it ----------
+const SHOWCASE: { fx: string; lines: string[] }[] = [
+  { fx: 'meadow', lines: ['in full bloom', 'let it grow', 'spring is here'] },
+  { fx: 'critters', lines: ['who lives here', 'tiny neighbours', 'hello friends'] },
+  { fx: 'balloons', lines: ['happy birthday', 'party time', 'you did it'] },
+  { fx: 'doodles', lines: ['big ideas', 'note to self', 'good vibes'] },
 ];
-const DEMO = LINES[0];
+const DEMO = SHOWCASE[0].lines[0];
+let round = 0;
+/** The next phrase, and the effect to show it in (or the pinned one, if the person picked). */
+function nextLine() {
+  const order = pinned ? SHOWCASE.filter((s) => s.fx === pinned) : SHOWCASE;
+  const set = order[round % order.length];
+  const text = set.lines[Math.floor(round / SHOWCASE.length) % set.lines.length];
+  round++;
+  return { fx: set.fx, text };
+}
 let auto = false; // the demo owns the text right now
-let line = 0;
 let autoCall: gsap.core.Tween | null = null;
 let idle: number | undefined;
 
 function runAuto() {
   auto = true;
-  const t = editor.typeIn(LINES[line++ % LINES.length], 0.075);
-  autoCall = gsap.delayedCall(t + 2.6, () => {
+  document.body.classList.add('demo');
+  const { fx, text } = nextLine();
+  if (fx !== fxName) {
+    showcasePick = true;
+    controls.fx(fx);
+    showcasePick = false;
+  }
+  const t = editor.typeIn(text, 0.075);
+  // each effect gets a proper moment before the phrase goes
+  autoCall = gsap.delayedCall(t + 8, () => {
     const d = editor.backspaceAll(0.032);
     autoCall = gsap.delayedCall(d + 0.7, runAuto);
   });
@@ -73,6 +131,7 @@ function runAuto() {
 function stopAuto() {
   autoCall?.kill();
   editor.stopTyping();
+  document.body.classList.remove('demo');
 }
 /** Hand the stage to the person: the demo stops and its words leave. */
 function takeOver() {
@@ -115,7 +174,7 @@ document.fonts.ready.then(() => {
 });
 
 $('#shareBtn').addEventListener('click', async () => {
-  const p = new URLSearchParams({ t: editor.getText() || DEMO, f: document.body.dataset.font! });
+  const p = new URLSearchParams({ t: editor.getText() || DEMO, f: document.body.dataset.font!, e: fxName });
   const url = `${location.origin}${location.pathname}#${p}`;
   history.replaceState(null, '', `#${p}`);
   try {
@@ -286,48 +345,3 @@ async function runExport() {
   }
 }
 $('#exportGo').addEventListener('click', runExport);
-
-// ---------- code sheet ----------
-const SNIPPETS: Record<string, string> = {
-  npm: `npm i emojiii gsap`,
-  HTML: `<h1 id="title">Every letter is secretly a snack</h1>
-
-<script type="module">
-  import { hover, garden } from 'https://esm.sh/emojiii'
-  hover(document.querySelector('#title'))
-  // or: garden(document.querySelector('#title'))
-</script>`,
-  React: `import { useEffect, useRef } from 'react'
-import { hover } from 'emojiii'
-
-export function Title() {
-  const ref = useRef(null)
-  useEffect(() => hover(ref.current), [])
-  return <h1 ref={ref}>Every letter is secretly a snack</h1>
-}`,
-};
-const codeSheet = $<HTMLDialogElement>('#codeSheet');
-codeSheet.innerHTML = `
-  <h2>Steal it</h2>
-  <p>Free, MIT licensed. <code>hover()</code> is the swap on hover, <code>garden()</code> grows emojis on your text. Both read the words for context and return a cleanup function.</p>
-  <div class="tabs" role="tablist">${Object.keys(SNIPPETS).map((k, i) => `<button role="tab" aria-selected="${i === 0}" data-k="${k}">${k}</button>`).join('')}</div>
-  <pre class="code" id="codeBox"></pre>
-  <div class="actions">
-    <button class="btn" id="codeClose">Close</button>
-    <button class="btn primary" id="codeCopy">Copy</button>
-  </div>`;
-let tab = 'npm';
-const codeBox = $('#codeBox');
-const showTab = (k: string) => {
-  tab = k;
-  codeBox.textContent = SNIPPETS[k];
-  codeSheet.querySelectorAll('[role=tab]').forEach((b) => b.setAttribute('aria-selected', String((b as HTMLElement).dataset.k === k)));
-};
-codeSheet.querySelectorAll<HTMLElement>('[role=tab]').forEach((b) => b.addEventListener('click', () => showTab(b.dataset.k!)));
-showTab(tab);
-$('#codeBtn').addEventListener('click', () => codeSheet.showModal());
-$('#codeClose').addEventListener('click', () => codeSheet.close());
-$('#codeCopy').addEventListener('click', async () => {
-  await navigator.clipboard.writeText(SNIPPETS[tab]);
-  toast('Copied');
-});
