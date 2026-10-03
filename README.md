@@ -14,12 +14,11 @@ wildtype is a little garden for your letters. Type anything and pick who shows u
 - **Bugs**: ladybug letters, marching ants, and a strawberry if you click.
 - **Planes**: paper planes perch, loop and fold themselves out of thin air.
 
-Delete a letter and its tenants pack up and leave. Leave it alone and it plays by itself.
+Delete a letter and its tenants pack up and leave, leave it alone and it plays by itself.
 
-Every line is drawn in code and boils at 24 fps like a hand-drawn cartoon. No images, no emojis, no stock art.
+Every line is drawn in code and boils at 24 fps like a hand-drawn cartoon, no usage of images, emojis, or stock art.
 
-When you make something you like, export it as an MP4 or GIF, or send the link: it opens with your word and your effect.
-
+When you make something you like, export it as an MP4 or GIF, or send the link!
 ---
 
-Made by Zero. Built with [GSAP](https://gsap.com), set in Fraunces. MIT licensed, so poke around the code.
+Made by Zero. Built with [GSAP](https://gsap.com). MIT licensed.
