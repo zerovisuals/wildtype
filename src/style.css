@@ -7,13 +7,11 @@
   --sans: 'Plus Jakarta Sans', system-ui, sans-serif;
   --serif: 'Fraunces', Georgia, serif;
   --display: var(--sans);
-  --emoji: 'Apple Color Emoji', 'Noto Color Emoji', 'Segoe UI Emoji', sans-serif;
   --track: -0.025em;
   --pill-shadow: 0 1px 1px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.09);
   --surface: #ffffff;
   --surface-2: #f3f3f3;
   --ph: #cfcfcf;
-  --emoji-shadow: rgba(0, 0, 0, 0.16);
   color-scheme: light;
 }
 
@@ -73,40 +71,6 @@ body[data-font='serif'] .fx {
 .word { display: inline-block; white-space: nowrap; }
 .ch { position: relative; display: inline-block; white-space: pre; }
 .ch .g { display: inline-block; will-change: transform, opacity, filter; }
-.emo {
-  font-family: var(--emoji);
-  font-style: normal;
-  font-weight: 400;
-  letter-spacing: 0;
-  font-variation-settings: normal;
-  line-height: 1;
-  display: grid;
-  place-items: center;
-}
-.em, .bud, .puff {
-  position: absolute;
-  pointer-events: none;
-  user-select: none;
-  -webkit-user-drag: none;
-  --b: 0;
-  filter: blur(calc(var(--b) * 1px)) drop-shadow(0 0.06em 0.09em var(--emoji-shadow));
-  will-change: transform, opacity, filter;
-}
-.em {
-  left: 50%; top: 50%;
-  font-size: 0.74em;
-  width: 1.2em; height: 1.2em;
-  margin: -0.66em 0 0 -0.6em;
-  z-index: 3;
-}
-.bud {
-  left: 50%; bottom: 80%;
-  font-size: 0.37em;
-  width: 1.2em; height: 1.2em;
-  margin-left: -0.6em;
-  transform-origin: 50% 100%;
-  z-index: 2;
-}
 .nl { display: block; height: 0; }
 
 /* playground */

@@ -89,7 +89,6 @@ function drawFrame(ctx: CanvasRenderingContext2D, W: number, H: number, o: Opts)
 
   for (const root of [text, fx]) {
     root.querySelectorAll<HTMLElement>('.g').forEach((g) => draw(g, root, false));
-    root.querySelectorAll<HTMLElement>('.emo').forEach((e) => draw(e, root, true));
   }
 
   // the caret, blinking like the real one (only shown while someone is typing live)

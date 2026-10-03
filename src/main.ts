@@ -1,5 +1,4 @@
 import gsap from 'gsap';
-import { preload } from './letters';
 import { startEditor } from './editor';
 import { Scene } from './scene/engine';
 import { Meadow } from './scene/meadow';
@@ -23,7 +22,6 @@ const EFFECTS: Record<string, () => Effect> = {
 import { BACKDROPS, record, download, videoMime } from './export';
 import { mountBackground } from './bg/engine';
 
-preload();
 const bg = mountBackground(document.querySelector('#bg') as HTMLCanvasElement);
 
 const $ = <T extends HTMLElement>(s: string) => document.querySelector(s) as T;
