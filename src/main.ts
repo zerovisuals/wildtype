@@ -6,7 +6,7 @@ import { Critters } from './scene/critters';
 import { Balloons } from './scene/balloons';
 import { Doodles } from './scene/doodles';
 import { Paint } from './scene/paint';
-import { Bugs } from './scene/bugs';
+// Bugs (src/scene/bugs.ts) is archived for now: kept in the repo, not in the palette
 import { Planes } from './scene/planes';
 import type { Effect } from './scene/engine';
 
@@ -16,7 +16,6 @@ const EFFECTS: Record<string, () => Effect> = {
   balloons: () => new Balloons(),
   doodles: () => new Doodles(),
   paint: () => new Paint(),
-  bugs: () => new Bugs(),
   planes: () => new Planes(),
 };
 import { BACKDROPS, record, download, videoMime } from './export';
@@ -210,7 +209,6 @@ const SHOWCASE: { fx: string; lines: string[] }[] = [
   { fx: 'balloons', lines: ['happy birthday', 'party time', 'you did it'] },
   { fx: 'doodles', lines: ['big ideas', 'note to self', 'good vibes'] },
   { fx: 'paint', lines: ['fresh paint', 'wet ink', 'colour me in'] },
-  { fx: 'bugs', lines: ['small world', 'busy busy', 'picnic day'] },
   { fx: 'planes', lines: ['take off', 'send it', 'see you soon'] },
 ];
 const DEMO = SHOWCASE[0].lines[0];

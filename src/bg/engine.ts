@@ -2,7 +2,7 @@
 // the view is fitted to the lattice's rest extent (viewShort) so one fixed 11 x 7 lattice fills any screen,
 // and on portrait screens the field is turned a quarter so the lattice's long axis runs down the phone.
 import {
-  viewShort, CURSOR_EASE, CURSOR_PUSH, CURSOR_RADIUS, CURSOR_RIPPLE_BIAS, DPR_CAP, GRID_NX, GRID_NY, INK,
+  viewShort, CURSOR_EASE, CURSOR_PUSH, CURSOR_RADIUS, CURSOR_RIPPLE_BIAS, DPR_CAP, BG_FPS, GRID_NX, GRID_NY, INK,
   LENS_POWER, LENS_RADIUS, MODE_OFFSETS, MODE_PITCH, PAPER, PITCH, RIPPLE_LEN, SHELL_SOFT, SIGMA_K, THRESHOLD,
   frameAt, rgb,
 } from './params';
@@ -305,6 +305,10 @@ export class RippleGrid {
     const tick = () => {
       if (!this.running) return;
       const now = performance.now();
+      if (now - this.last < 1000 / BG_FPS - 2) {
+        this.raf = requestAnimationFrame(tick);
+        return;
+      }
       const dt = Math.min(now - this.last, 50) / 1000;
       this.clock += dt;
       this.last = now;
@@ -338,8 +342,13 @@ export class RippleGrid {
 /** Mount the grid on a fixed full-page canvas; it pauses on hidden tabs and follows the pointer. */
 export function mountBackground(canvas: HTMLCanvasElement) {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const engine = new RippleGrid(canvas);
   let held = false;
+  // phones and touch tablets skip the shader entirely: no GL context, no battery spent
+  if (matchMedia('(pointer: coarse), (max-width: 760px)').matches) {
+    canvas.remove();
+    return { hold(_on: boolean) {} };
+  }
+  const engine = new RippleGrid(canvas);
   const control = {
     /** Freeze on the current frame (e.g. while recording, which never includes the background). */
     hold(on: boolean) {

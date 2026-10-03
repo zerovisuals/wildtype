@@ -47,7 +47,10 @@ export const INK = '#1b1b1b';
 export const PAPER = '#ffffff';
 
 // It sits under the page at a few percent opacity, so full resolution buys nothing.
-export const DPR_CAP = 1;
+// it shows at 2% opacity, so a soft, low-res buffer looks identical and costs a fraction
+export const DPR_CAP = 0.4;
+/** Frames per second the grid redraws at; its motion is slow enough that 30 reads as smooth. */
+export const BG_FPS = 30;
 
 /**
  * Inked half-extent of the lattice at REST, in field units (measured across all three structures,
