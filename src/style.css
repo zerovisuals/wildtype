@@ -42,7 +42,20 @@ body {
   padding: 20px clamp(16px, 4vw, 40px);
 
 }
-.logo { font: 600 19px/1 var(--sans); letter-spacing: -0.04em; color: var(--ink); text-decoration: none; }
+.logo {
+  font: 420 24px/1 var(--serif);
+  font-variation-settings: 'SOFT' 100, 'WONK' 1, 'opsz' 36;
+  letter-spacing: -0.03em; color: var(--ink); text-decoration: none;
+}
+/* the dot of the i is a poppy */
+.logo-i { position: relative; display: inline-block; }
+.logo-dot {
+  position: absolute; left: 50%; top: -0.08em;
+  width: 0.5em; height: 0.46em; margin-left: -0.25em;
+  overflow: visible; filter: url(#boilSoft);
+  transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.5);
+}
+.logo:hover .logo-dot { transform: rotate(45deg) scale(1.15); }
 
 /* display type */
 .text, .fx {
@@ -312,21 +325,60 @@ button:focus-visible, a:focus-visible { outline: 2px solid #2f6bff; outline-offs
   filter: url(#boilSoft);
   transform-origin: 50% 100%;
 }
+
+#fxSeg { overflow: visible; }
+
+/* effect palette: icons only, standing on the left edge. The knob slides behind the active one. */
+.fx-strip {
+  position: fixed; left: 20px; top: 50%; z-index: 10;
+  transform: translateY(-50%);
+}
+#fxSeg {
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px;
+  border-radius: 22px;
+}
 #fxSeg .seg-btn {
-  font-family: var(--serif);
-  font-variation-settings: 'SOFT' 100, 'WONK' 1, 'opsz' 14;
-  font-weight: 420;
-  font-size: 15px;
-  letter-spacing: -0.01em;
-  padding: 9px 16px;
+  width: 50px; height: 50px; padding: 0;
+  display: grid; place-items: center;
+  border-radius: 16px;
+}
+#fxSeg .knob { border-radius: 16px; transform-origin: 50% 50%; }
+.seg-icon { width: 34px; height: 34px; display: block; transition: opacity 0.25s, filter 0.25s, transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.5); }
+.seg-icon svg { width: 100%; height: 100%; display: block; overflow: visible; filter: url(#boilSoft); }
+#fxSeg .seg-btn[aria-checked='false'] .seg-icon { opacity: 0.5; filter: grayscale(0.55); }
+#fxSeg .seg-btn:hover .seg-icon { opacity: 1; filter: none; transform: rotate(-8deg) scale(1.08); }
+/* the name, as a little ink tag beside the icon */
+.seg-tip {
+  position: absolute; left: calc(100% + 12px); top: 50%;
+  transform: translate(-4px, -50%);
+  padding: 6px 10px; border-radius: 10px;
+  background: var(--ink); color: var(--bg);
+  font: 500 13px/1 var(--sans); white-space: nowrap;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.18s, transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.3);
+}
+#fxSeg .seg-btn:hover .seg-tip,
+#fxSeg .seg-btn:focus-visible .seg-tip { opacity: 1; transform: translate(0, -50%); }
+@media (max-width: 760px) {
+  .fx-strip { top: auto; bottom: 14px; left: 50%; transform: translateX(-50%); }
+  #fxSeg { flex-direction: row; }
+  #fxSeg .seg-btn { width: 44px; height: 44px; }
+  .seg-icon { width: 30px; height: 30px; }
+  .seg-tip { left: 50%; top: auto; bottom: calc(100% + 10px); transform: translate(-50%, 4px); }
+  #fxSeg .seg-btn:hover .seg-tip { transform: translate(-50%, 0); }
+  .play { padding-bottom: 90px; }
 }
 
-/* the effect's little drawing, sitting on top of the knob */
-.knob-art {
-  position: absolute; left: 50%; bottom: calc(100% - 9px);
-  width: 30px; height: 30px; margin-left: -15px;
-  transform-origin: 50% 100%;
-  pointer-events: none;
+/* Bugs: the letters turn ladybug red with black spots (two offset spot grids so it never looks like a print) */
+body[data-fx='bugs'] .text .g,
+body[data-fx='bugs'] .fx .g {
+  color: transparent;
+  background:
+    radial-gradient(circle at 30% 35%, #1d1a17 0 0.035em, transparent 0.04em) 0 0 / 0.23em 0.21em,
+    radial-gradient(circle at 70% 60%, #1d1a17 0 0.025em, transparent 0.03em) 0.08em 0.1em / 0.31em 0.27em,
+    #e8392e;
+  -webkit-background-clip: text;
+  background-clip: text;
 }
-.knob-art svg { width: 100%; height: 100%; display: block; overflow: visible; }
-#fxSeg { overflow: visible; margin-top: 18px; }

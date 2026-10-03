@@ -41,6 +41,8 @@ export interface Effect {
   /** true once everything that grew on a dead letter has finished leaving */
   gone(L: Letter, w: World): boolean;
   click(x: number, y: number, w: World): void;
+  /** the effect slider landed here: a small hello from the effect (defaults to a click) */
+  land?(x: number, y: number, w: World): void;
   update(w: World): void;
   draw(back: CanvasRenderingContext2D, front: CanvasRenderingContext2D, w: World): void;
   reset(): void;
@@ -165,6 +167,12 @@ export class Scene {
 
   click(x: number, y: number) {
     this.effect.click(x, y, this.world());
+  }
+
+  land(x: number, y: number) {
+    const w = this.world();
+    if (this.effect.land) this.effect.land(x, y, w);
+    else this.effect.click(x, y, w);
   }
 
   private place(L: Letter, rect?: DOMRect) {

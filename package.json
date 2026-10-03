@@ -1,7 +1,7 @@
 {
-  "name": "emojiii",
+  "name": "wildtype",
   "version": "0.1.0",
-  "description": "Letters that turn into emojis. Hover, garden and a context engine, no AI.",
+  "description": "Type a word and watch wild things move in: hand-drawn flowers, critters, balloons and doodles that live on your letters.",
   "main": "dist-lib/emojiii.js",
   "scripts": {
     "dev": "vite",

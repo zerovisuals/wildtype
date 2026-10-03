@@ -79,7 +79,7 @@ function drawFrame(ctx: CanvasRenderingContext2D, W: number, H: number, o: Opts)
       ctx.shadowBlur = size * 0.12;
       ctx.shadowOffsetY = size * 0.07;
     } else {
-      ctx.fillStyle = backdrop.ink;
+      ctx.fillStyle = document.body.dataset.fx === 'bugs' ? ladybug(ctx, size) : backdrop.ink;
     }
     const m = ctx.measureText(el.textContent ?? '');
     // center of the font box sits on the element's center; work back to the baseline
@@ -105,8 +105,30 @@ function drawFrame(ctx: CanvasRenderingContext2D, W: number, H: number, o: Opts)
   ctx.fillStyle = backdrop.ink;
   ctx.font = `600 ${Math.round(H * 0.026)}px 'Plus Jakarta Sans', sans-serif`;
   ctx.textAlign = 'right';
-  ctx.fillText('emojiii', W - H * 0.045, H - H * 0.045);
+  ctx.fillText('wildtype', W - H * 0.045, H - H * 0.045);
   ctx.restore();
+}
+
+/** Red with black spots, the Bugs letter fill, as a canvas pattern sized to the type. */
+let spots: { size: number; pat: CanvasPattern | null } = { size: 0, pat: null };
+function ladybug(ctx: CanvasRenderingContext2D, size: number) {
+  const cell = Math.max(6, Math.round(size * 0.23));
+  if (spots.size !== cell) {
+    const c = document.createElement('canvas');
+    c.width = cell * 3;
+    c.height = cell * 3;
+    const x = c.getContext('2d')!;
+    x.fillStyle = '#e8392e';
+    x.fillRect(0, 0, c.width, c.height);
+    x.fillStyle = '#1d1a17';
+    for (const [px, py, r] of [[0.3, 0.35, 0.16], [1.6, 0.9, 0.11], [2.4, 2.2, 0.15], [0.9, 2.1, 0.12], [2.1, 0.3, 0.1], [1.2, 1.5, 0.08]]) {
+      x.beginPath();
+      x.arc(px * cell, py * cell, r * cell, 0, Math.PI * 2);
+      x.fill();
+    }
+    spots = { size: cell, pat: ctx.createPattern(c, 'repeat') };
+  }
+  return spots.pat ?? '#e8392e';
 }
 
 export function videoMime() {

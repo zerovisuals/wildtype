@@ -268,13 +268,14 @@ export class Meadow implements Effect {
           this.target(b, w);
         }
       } else {
-        const want = Math.min(d * 2.2, 260);
-        b.vx += ((dx / (d || 1)) * want - b.vx) * Math.min(1, dt * 3);
-        b.vy += ((dy / (d || 1)) * want - b.vy) * Math.min(1, dt * 3);
+        // an unhurried bee: slow cruise, gentle steering
+        const want = Math.min(d * 1.4, 110);
+        b.vx += ((dx / (d || 1)) * want - b.vx) * Math.min(1, dt * 1.8);
+        b.vy += ((dy / (d || 1)) * want - b.vy) * Math.min(1, dt * 1.8);
       }
       b.phase += dt;
-      b.x += b.vx * dt + Math.cos(b.phase * 9) * 0.6;
-      b.y += b.vy * dt + Math.sin(b.phase * 13) * 0.8;
+      b.x += b.vx * dt + Math.cos(b.phase * 6) * 22 * dt; // the buzz, per second not per frame
+      b.y += b.vy * dt + Math.sin(b.phase * 8) * 26 * dt;
     }
     this.bees = this.bees.filter((b) => !(b.leaving && (b.x < -60 || b.x > w.W + 60 || b.y < -50)));
   }

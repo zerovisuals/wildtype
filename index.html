@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>emojiii</title>
-  <meta name="description" content="Type anything and watch emojis grow out of your words. Free to use." />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%8C%B1%3C/text%3E%3C/svg%3E" />
+  <title>wildtype</title>
+  <meta name="description" content="Type a word and watch wild things move in: flowers, critters, balloons, doodles." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Cpath%20d%3D%22M13%2015h5v12.5c0%20.8.6%201.5%201.6%201.5H20v1h-8v-1h.4c1%200%201.6-.7%201.6-1.5V17h-1z%22%20fill%3D%22%23191716%22/%3E%3Cpath%20d%3D%22M18%2022c2.6-2.6%205.2-2.6%206.6-1.4-2%202-4.2%202.2-6.6%201.4z%22%20fill%3D%22%234f9a5a%22/%3E%3Cg%20transform%3D%22translate%2816%207.4%29%22%3E%3Cellipse%20cy%3D%22-2.7%22%20rx%3D%223.4%22%20ry%3D%222.8%22%20fill%3D%22%23d83a1f%22/%3E%3Cellipse%20cx%3D%222.7%22%20rx%3D%222.8%22%20ry%3D%223.4%22%20fill%3D%22%23ff5a36%22/%3E%3Cellipse%20cy%3D%222.7%22%20rx%3D%223.4%22%20ry%3D%222.8%22%20fill%3D%22%23d83a1f%22/%3E%3Cellipse%20cx%3D%22-2.7%22%20rx%3D%222.8%22%20ry%3D%223.4%22%20fill%3D%22%23ff5a36%22/%3E%3Ccircle%20r%3D%221.5%22%20fill%3D%22%232a1e1a%22/%3E%3C/g%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..500,0..100,0..1&family=Noto+Color+Emoji&display=swap" rel="stylesheet" />
@@ -26,7 +26,7 @@
   </svg>
   <canvas class="bg" id="bg" aria-hidden="true"></canvas>
   <header class="nav">
-    <a class="logo" href="/" aria-label="emojiii home">emojiii</a>
+    <a class="logo" href="/" aria-label="wildtype home">w<span class="logo-i">ı<svg class="logo-dot" viewBox="9 1 14 13" aria-hidden="true"><g transform="translate(16 7.4)"><ellipse cy="-2.7" rx="3.4" ry="2.8" fill="#d83a1f"/><ellipse cx="2.7" rx="2.8" ry="3.4" fill="#ff5a36"/><ellipse cy="2.7" rx="3.4" ry="2.8" fill="#d83a1f"/><ellipse cx="-2.7" rx="2.8" ry="3.4" fill="#ff5a36"/><circle r="1.5" fill="#2a1e1a"/></g></svg></span>ldtype</a>
     <div class="nav-actions">
       <button class="text-btn" id="shareBtn">Share</button>
       <button class="text-btn strong" id="exportBtn">Export</button>
@@ -44,11 +44,16 @@
 
     <div class="dock" role="toolbar" aria-label="Controls">
       <div class="dock-row">
+        <div class="fx-strip" id="fxStrip">
         <div class="seg" id="fxSeg" role="radiogroup" aria-label="Effect">
           <button role="radio" data-v="meadow" class="seg-btn">Meadow</button>
           <button role="radio" data-v="critters" class="seg-btn">Critters</button>
           <button role="radio" data-v="balloons" class="seg-btn">Balloons</button>
           <button role="radio" data-v="doodles" class="seg-btn">Doodles</button>
+          <button role="radio" data-v="paint" class="seg-btn">Paint</button>
+          <button role="radio" data-v="bugs" class="seg-btn">Bugs</button>
+          <button role="radio" data-v="planes" class="seg-btn">Planes</button>
+        </div>
         </div>
         <button class="icon-btn" id="clear" aria-label="Clear text" title="Clear">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4.5 4.5v3.6h3.6"/></svg>

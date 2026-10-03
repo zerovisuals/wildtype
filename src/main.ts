@@ -6,6 +6,9 @@ import { Meadow } from './scene/meadow';
 import { Critters } from './scene/critters';
 import { Balloons } from './scene/balloons';
 import { Doodles } from './scene/doodles';
+import { Paint } from './scene/paint';
+import { Bugs } from './scene/bugs';
+import { Planes } from './scene/planes';
 import type { Effect } from './scene/engine';
 
 const EFFECTS: Record<string, () => Effect> = {
@@ -13,6 +16,9 @@ const EFFECTS: Record<string, () => Effect> = {
   critters: () => new Critters(),
   balloons: () => new Balloons(),
   doodles: () => new Doodles(),
+  paint: () => new Paint(),
+  bugs: () => new Bugs(),
+  planes: () => new Planes(),
 };
 import { BACKDROPS, record, download, videoMime } from './export';
 import { mountBackground } from './bg/engine';
@@ -86,6 +92,28 @@ const KNOB_ART: Record<string, string> = {
     <path d="M16 6 C16.8 13 18.6 15 26 16 C18.6 17 16.8 19 16 26 C15.2 19 13.4 17 6 16 C13.4 15 15.2 13 16 6Z" stroke="#2747c9" stroke-width="1.8"/>
     <path d="M25 5.5 L27 3.5 M27.5 8 L30 7.5 M23 3 L23.4 0.8" stroke="#e5484d" stroke-width="1.5"/>
     </svg>`,
+  paint: `<svg viewBox="0 0 32 32" aria-hidden="true">
+    <path d="M4 22 C4 16 9 15 12 17 C14 18 15 16 17 15 C20 13.5 27 14 28 20 C28.6 23.5 26 25 24 24 L24 28.5 A2.2 2.2 0 0 1 19.6 28.5 L19.6 24.6 C18 25.4 15.6 25.2 14.4 24.4 L14.4 30 A2.4 2.4 0 0 1 9.6 30 L9.6 24.8 C6 25.6 4 24.6 4 22Z" fill="#3d63e0"/>
+    <path d="M8 19.5 C9.5 18.2 11 18.4 12 19" stroke="#fff" stroke-width="1.2" fill="none" stroke-linecap="round" opacity=".6"/>
+    <circle cx="11.2" cy="29.6" r=".8" fill="#fff" opacity=".6"/>
+    </svg>`,
+  bugs: `<svg viewBox="0 0 32 32" aria-hidden="true">
+    <g stroke="#1d1a17" stroke-width="1.2" stroke-linecap="round">
+      <path d="M10 20 L6 18 M10 24 L5.5 25 M13 27 L11 30.5 M22 20 L26 18 M22 24 L26.5 25 M19 27 L21 30.5"/>
+    </g>
+    <ellipse cx="16" cy="13.5" rx="4.2" ry="3.4" fill="#1d1a17"/>
+    <circle cx="14.2" cy="12.4" r=".8" fill="#fff"/><circle cx="17.8" cy="12.4" r=".8" fill="#fff"/>
+    <path d="M16 15 C9 15 7.5 21 8.5 24 C10 28.5 22 28.5 23.5 24 C24.5 21 23 15 16 15Z" fill="#e8392e" stroke="#1d1a17" stroke-width="1.3"/>
+    <path d="M16 15.5 L16 27.6" stroke="#1d1a17" stroke-width="1.2"/>
+    <circle cx="12" cy="20" r="1.6" fill="#1d1a17"/><circle cx="20" cy="20" r="1.6" fill="#1d1a17"/><circle cx="12.6" cy="24.6" r="1.2" fill="#1d1a17"/><circle cx="19.4" cy="24.6" r="1.2" fill="#1d1a17"/>
+    <ellipse cx="11.4" cy="17.4" rx="1.4" ry=".7" fill="#fff" opacity=".55" transform="rotate(-25 11.4 17.4)"/>
+    </svg>`,
+  planes: `<svg viewBox="0 0 32 32" aria-hidden="true" stroke="#2a2522" stroke-width="1.3" stroke-linejoin="round">
+    <path d="M29 9 L4 17.5 L11.5 19.5Z" fill="#d9d2c4"/>
+    <path d="M29 9 L11.5 19.5 L13.5 27 L16.6 21.6 L23 25Z" fill="#fff"/>
+    <path d="M29 9 L13.5 27" fill="none"/>
+    <circle cx="5" cy="25" r=".9" fill="#2a2522" stroke="none" opacity=".5"/><circle cx="2.4" cy="28.4" r=".7" fill="#2a2522" stroke="none" opacity=".35"/>
+    </svg>`,
 };
 
 // ---------- segmented controls ----------
@@ -93,37 +121,38 @@ const controls: Record<string, (v: string, animate?: boolean) => void> = {};
 function segmented(el: HTMLElement, initial: string, onPick: (v: string) => void, onLand?: (x: number, y: number) => void) {
   const knob = document.createElement('span');
   knob.className = 'knob';
-  const art = document.createElement('span');
-  art.className = 'knob-art';
-  knob.append(art);
   el.prepend(knob);
   const btns = [...el.querySelectorAll<HTMLButtonElement>('.seg-btn')];
   let current: HTMLButtonElement | null = null;
-  const setArt = (v: string, pop: boolean) => {
-    art.innerHTML = KNOB_ART[v] ?? '';
-    if (pop) gsap.fromTo(art, { scale: 0, rotation: -25 }, { scale: 1, rotation: 0, duration: 0.55, ease: 'back.out(2.4)' });
-  };
+  // the palette stands up on wide screens and lies down on phones: slide along whichever axis it has
+  const vertical = () => getComputedStyle(el).flexDirection === 'column';
+  const place = (b: HTMLButtonElement) => ({ x: b.offsetLeft, y: b.offsetTop, width: b.offsetWidth, height: b.offsetHeight });
   const choose = (b: HTMLButtonElement, animate = true) => {
     btns.forEach((x) => x.setAttribute('aria-checked', String(x === b)));
     const moved = current && current !== b;
     current = b;
     onPick(b.dataset.v!);
+    const to = place(b);
     if (!animate || !moved) {
-      gsap.set(knob, { x: b.offsetLeft, width: b.offsetWidth });
-      setArt(b.dataset.v!, false);
+      gsap.set(knob, to);
       return;
     }
-    // the old drawing ducks down into the knob as it leaves
-    gsap.to(art, { scale: 0, rotation: 20 * Math.sign(b.offsetLeft - (gsap.getProperty(knob, 'x') as number)), duration: 0.16, ease: 'power2.in' });
+    const v = vertical();
+    const from = v ? (gsap.getProperty(knob, 'y') as number) : (gsap.getProperty(knob, 'x') as number);
+    const dir = Math.sign((v ? to.y : to.x) - from) || 1;
     // cartoon timing: it leans and stretches into the slide, then squashes as it lands
-    const dir = Math.sign(b.offsetLeft - (gsap.getProperty(knob, 'x') as number)) || 1;
+    const lean = v ? { scaleX: 0.82, skewY: -10 * dir } : { scaleY: 0.82, skewX: -10 * dir };
+    const over = v ? { scaleX: 1.12, skewY: 4 * dir } : { scaleY: 1.12, skewX: 4 * dir };
+    const rest = v ? { scaleX: 1, skewY: 0 } : { scaleY: 1, skewX: 0 };
     gsap.timeline()
-      .to(knob, { x: b.offsetLeft, width: b.offsetWidth, duration: 0.42, ease: 'power3.inOut' }, 0)
-      .to(knob, { scaleY: 0.82, skewX: -10 * dir, duration: 0.18, ease: 'power2.out' }, 0)
-      .to(knob, { scaleY: 1.12, skewX: 4 * dir, duration: 0.12, ease: 'power2.in' }, 0.3)
-      .to(knob, { scaleY: 1, skewX: 0, duration: 0.5, ease: 'elastic.out(1, 0.45)' }, 0.42)
+      .to(knob, { ...to, duration: 0.42, ease: 'power3.inOut' }, 0)
+      .to(knob, { ...lean, duration: 0.18, ease: 'power2.out' }, 0)
+      .to(knob, { ...over, duration: 0.12, ease: 'power2.in' }, 0.3)
+      .to(knob, { ...rest, duration: 0.5, ease: 'elastic.out(1, 0.45)' }, 0.42)
       .call(() => {
-        setArt(b.dataset.v!, true);
+        // the new drawing does a little hop as the knob arrives under it
+        const icon = b.querySelector('.seg-icon');
+        if (icon) gsap.fromTo(icon, { scale: 0.6, rotation: -18 * dir }, { scale: 1, rotation: 0, duration: 0.55, ease: 'back.out(2.6)' });
         if (!onLand) return;
         const r = knob.getBoundingClientRect();
         onLand(r.left + r.width / 2, r.top + r.height / 2);
@@ -131,11 +160,19 @@ function segmented(el: HTMLElement, initial: string, onPick: (v: string) => void
   };
   btns.forEach((b) => b.addEventListener('click', () => choose(b)));
   document.fonts.ready.then(() => choose(btns.find((b) => b.dataset.v === initial)!, false));
+  addEventListener('resize', () => current && gsap.set(knob, place(current)));
   return (v: string, animate = true) => {
     const b = btns.find((x) => x.dataset.v === v);
     if (b) choose(b, animate);
   };
 }
+
+// the effect buttons are their drawings; the name lives in a tooltip and for screen readers
+document.querySelectorAll<HTMLButtonElement>('#fxSeg .seg-btn').forEach((b) => {
+  const label = b.textContent?.trim() ?? '';
+  b.setAttribute('aria-label', label);
+  b.innerHTML = `<span class="seg-icon">${KNOB_ART[b.dataset.v!] ?? ''}</span><span class="seg-tip" aria-hidden="true">${label}</span>`;
+});
 
 // ---------- share link: text and font live in the URL hash ----------
 const shared = new URLSearchParams(location.hash.slice(1));
@@ -150,10 +187,11 @@ controls.fx = segmented(
     if (scene.name !== v) scene.setEffect(EFFECTS[v]()); // also covers a shared link that opens on another effect
     if (!showcasePick && fxName !== v) pinned = v;
     fxName = v;
+    document.body.dataset.fx = v; // lets the type itself dress for the effect (ladybug letters for Bugs)
     $('.hint').textContent = scene.hint;
   },
   // the knob lands with the new effect's own interaction: bees, a balloon, a scribble, a hop
-  (x, y) => scene.click(x, y),
+  (x, y) => scene.land(x, y),
 );
 $('.hint').textContent = scene.hint;
 
@@ -163,6 +201,9 @@ const SHOWCASE: { fx: string; lines: string[] }[] = [
   { fx: 'critters', lines: ['who lives here', 'tiny neighbours', 'hello friends'] },
   { fx: 'balloons', lines: ['happy birthday', 'party time', 'you did it'] },
   { fx: 'doodles', lines: ['big ideas', 'note to self', 'good vibes'] },
+  { fx: 'paint', lines: ['fresh paint', 'wet ink', 'colour me in'] },
+  { fx: 'bugs', lines: ['small world', 'busy busy', 'picnic day'] },
+  { fx: 'planes', lines: ['take off', 'send it', 'see you soon'] },
 ];
 const DEMO = SHOWCASE[0].lines[0];
 let round = 0;
@@ -244,7 +285,7 @@ $('#shareBtn').addEventListener('click', async () => {
   const url = `${location.origin}${location.pathname}#${p}`;
   history.replaceState(null, '', `#${p}`);
   try {
-    if (navigator.share && matchMedia('(pointer: coarse)').matches) await navigator.share({ title: 'emojiii', url });
+    if (navigator.share && matchMedia('(pointer: coarse)').matches) await navigator.share({ title: 'wildtype', url });
     else {
       await navigator.clipboard.writeText(url);
       toast('Link copied');
@@ -391,8 +432,8 @@ async function runExport() {
       },
     });
     const ext = blob.type.includes('gif') ? 'gif' : blob.type.includes('mp4') ? 'mp4' : 'webm';
-    download(blob, `emojiii.${ext}`);
-    toast(ext === 'webm' ? 'Saved as WebM (this browser has no MP4 recording)' : `Saved emojiii.${ext}`);
+    download(blob, `wildtype.${ext}`);
+    toast(ext === 'webm' ? 'Saved as WebM (this browser has no MP4 recording)' : `Saved wildtype.${ext}`);
   } catch (err) {
     toast((err as Error).message || 'Export failed');
   } finally {
