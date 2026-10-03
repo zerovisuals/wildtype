@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>emojiii</title>
+  <meta name="description" content="Type anything and watch emojis grow out of your words. Free to use." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%8C%B1%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..500,0..100,0..1&family=Noto+Color+Emoji&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body data-font="sans">
+  <canvas class="bg" id="bg" aria-hidden="true"></canvas>
+  <header class="nav">
+    <a class="logo" href="/" aria-label="emojiii home">emojiii</a>
+    <div class="nav-actions">
+      <button class="text-btn" id="codeBtn">Get the code</button>
+      <button class="text-btn" id="shareBtn">Share</button>
+      <button class="text-btn strong" id="exportBtn">Export</button>
+    </div>
+  </header>
+
+  <main class="play" id="play" aria-label="Playground">
+    <div class="editor" id="editor" tabindex="-1">
+      <textarea id="input" class="sr-input" aria-label="Type your text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+      <div class="text" id="text"></div>
+      <div class="fx" id="fx" aria-hidden="true"></div>
+    </div>
+
+    <div class="dock" role="toolbar" aria-label="Controls">
+      <div class="dock-row">
+        <div class="seg" id="fontSeg" role="radiogroup" aria-label="Font">
+          <button role="radio" data-v="sans" class="seg-btn f-sans">Grotesk</button>
+          <button role="radio" data-v="serif" class="seg-btn f-serif">Serif</button>
+        </div>
+        <button class="icon-btn" id="clear" aria-label="Clear text" title="Clear">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4.5 4.5v3.6h3.6"/></svg>
+        </button>
+      </div>
+      <p class="hint">Click a word to reroll its emojis</p>
+    </div>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <dialog class="sheet" id="exportSheet" aria-label="Export"></dialog>
+  <dialog class="sheet" id="codeSheet" aria-label="Get the code"></dialog>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

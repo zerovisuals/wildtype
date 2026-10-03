@@ -1,0 +1,46 @@
+{
+  "name": "emojiii",
+  "version": "0.1.0",
+  "description": "Letters that turn into emojis. Hover, garden and a context engine, no AI.",
+  "main": "dist-lib/emojiii.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build:lib": "vite build -c vite.lib.config.ts",
+    "index": "node scripts/build-index.mjs"
+  },
+  "keywords": [
+    "emoji",
+    "text effect",
+    "animation",
+    "gsap",
+    "typography"
+  ],
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+  "devDependencies": {
+    "emojilib": "^4.0.3",
+    "typescript": "^7.0.2",
+    "unicode-emoji-json": "^0.9.0",
+    "vite": "^8.3.2",
+    "gsap": "^3.15.0",
+    "gifenc": "^1.0.3"
+  },
+  "module": "dist-lib/emojiii.js",
+  "types": "types/emojiii.d.ts",
+  "exports": {
+    ".": {
+      "types": "./types/emojiii.d.ts",
+      "import": "./dist-lib/emojiii.js"
+    }
+  },
+  "files": [
+    "dist-lib",
+    "types"
+  ],
+  "sideEffects": false,
+  "peerDependencies": {
+    "gsap": "^3.15.0"
+  }
+}
