@@ -64,7 +64,7 @@ export class Scene {
   private lastMove = 0;
   private drawAcc = 1;
   private seed = 1;
-  private noise = document.getElementById('boilNoise');
+  private noise = [...document.querySelectorAll('[data-boil]')];
   /** drawn frames per second (posterize time), and the boil re-draws its wobble every BOIL_EVERY frames: on twos */
   static FPS = 24;
   static BOIL_EVERY = 2;
@@ -228,7 +228,7 @@ export class Scene {
     this.drawAcc %= 1 / Scene.FPS;
     if (this.frameNo++ % Scene.BOIL_EVERY === 0) {
       this.seed = (this.seed % 7) + 1; // a handful of seeds, cycled, reads as a steady boil
-      this.noise?.setAttribute('seed', String(this.seed));
+      for (const n of this.noise) n.setAttribute('seed', String(this.seed));
     }
     for (const ctx of [this.back, this.front]) {
       ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
