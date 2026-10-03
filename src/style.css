@@ -340,8 +340,8 @@ body[data-fx='bugs'] .text .g,
 body[data-fx='bugs'] .fx .g {
   color: transparent;
   background:
-    radial-gradient(circle at 30% 35%, #1d1a17 0 0.035em, transparent 0.04em) 0 0 / 0.23em 0.21em,
-    radial-gradient(circle at 70% 60%, #1d1a17 0 0.025em, transparent 0.03em) 0.08em 0.1em / 0.31em 0.27em,
+    radial-gradient(circle at 30% 35%, #1d1a17 0 0.16em, transparent 0.165em) 0 0 / 0.9em 0.82em,
+    radial-gradient(circle at 70% 60%, #1d1a17 0 0.12em, transparent 0.125em) 0.32em 0.4em / 1.15em 1.05em,
     #e8392e;
   -webkit-background-clip: text;
   background-clip: text;

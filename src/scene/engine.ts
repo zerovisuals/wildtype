@@ -150,6 +150,12 @@ export class Scene {
     this.effect.grow(L, this.world(), speed);
   }
 
+  /** Clean slate: the effect forgets everything and no letter is tracked, so nothing withers on the way out. */
+  wipe() {
+    this.effect.reset();
+    this.letters = [];
+  }
+
   remove(el: HTMLElement, rect: DOMRect) {
     const L = this.letters.find((l) => l.el === el && !l.dead);
     if (!L) return;

@@ -182,8 +182,18 @@ controls.fx = segmented(
   $('#fxSeg'),
   startFx,
   (v) => {
+    const manual = !showcasePick && fxName !== v;
+    if (manual) {
+      // a new category is a fresh page: wipe the old effect and words, then it introduces itself
+      pinned = v;
+      stopAuto();
+      clearTimeout(idle);
+      auto = true;
+      scene.wipe();
+      editor.clear(false);
+      autoCall = gsap.delayedCall(0.45, runAuto);
+    }
     if (scene.name !== v) scene.setEffect(EFFECTS[v]()); // also covers a shared link that opens on another effect
-    if (!showcasePick && fxName !== v) pinned = v;
     fxName = v;
     document.body.dataset.fx = v; // lets the type itself dress for the effect (ladybug letters for Bugs)
     $('.hint').textContent = scene.hint;

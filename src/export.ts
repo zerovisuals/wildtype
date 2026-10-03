@@ -111,7 +111,7 @@ function drawFrame(ctx: CanvasRenderingContext2D, W: number, H: number, o: Opts)
 /** Red with black spots, the Bugs letter fill, as a canvas pattern sized to the type. */
 let spots: { size: number; pat: CanvasPattern | null } = { size: 0, pat: null };
 function ladybug(ctx: CanvasRenderingContext2D, size: number) {
-  const cell = Math.max(6, Math.round(size * 0.23));
+  const cell = Math.max(6, Math.round(size * 0.9));
   if (spots.size !== cell) {
     const c = document.createElement('canvas');
     c.width = cell * 3;
@@ -120,7 +120,7 @@ function ladybug(ctx: CanvasRenderingContext2D, size: number) {
     x.fillStyle = '#e8392e';
     x.fillRect(0, 0, c.width, c.height);
     x.fillStyle = '#1d1a17';
-    for (const [px, py, r] of [[0.3, 0.35, 0.16], [1.6, 0.9, 0.11], [2.4, 2.2, 0.15], [0.9, 2.1, 0.12], [2.1, 0.3, 0.1], [1.2, 1.5, 0.08]]) {
+    for (const [px, py, r] of [[0.3, 0.35, 0.18], [1.6, 0.9, 0.14], [2.4, 2.2, 0.17], [0.9, 2.1, 0.15], [2.1, 0.3, 0.12], [1.2, 1.5, 0.11]]) {
       x.beginPath();
       x.arc(px * cell, py * cell, r * cell, 0, Math.PI * 2);
       x.fill();
