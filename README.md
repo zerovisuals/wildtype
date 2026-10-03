@@ -2,17 +2,17 @@
 
 **Type a word. Something moves in.**
 
-### 👉 [wild-type.vercel.app](https://wild-type.vercel.app)
+### [wild-type.vercel.app](https://wild-type.vercel.app)
 
 wildtype is a little garden for your letters. Type anything and pick who shows up:
 
-- 🌸 **Meadow**: flowers grow out of the actual letter shapes. Click and the bees come.
-- 👀 **Critters**: small blobs move into your word, watch your cursor and hop between letters.
-- 🎈 **Balloons**: tied to your type, tugging on their strings. Poke one, it pops.
-- ✏️ **Doodles**: a pen that can't stop scribbling in the margins.
-- 🎨 **Paint**: fresh coat on top, drips down the sides. Don't touch.
-- 🐞 **Bugs**: ladybug letters, marching ants, and a strawberry if you click.
-- ✈️ **Planes**: paper planes perch, loop and fold themselves out of thin air.
+- **Meadow**: flowers grow out of the actual letter shapes. Click and the bees come.
+- **Critters**: small blobs move into your word, watch your cursor and hop between letters.
+- **Balloons**: tied to your type, tugging on their strings. Poke one, it pops.
+- **Doodles**: a pen that can't stop scribbling in the margins.
+- **Paint**: fresh coat on top, drips down the sides. Don't touch.
+- **Bugs**: ladybug letters, marching ants, and a strawberry if you click.
+- **Planes**: paper planes perch, loop and fold themselves out of thin air.
 
 Delete a letter and its tenants pack up and leave. Leave it alone and it plays by itself.
 
